@@ -1,5 +1,5 @@
 ---
-
+import Hero from "../components/Hero.astro";
 ---
 
 <html lang="en">
@@ -9,9 +9,82 @@
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
+		<title>Oscar Rodríguez</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<Hero />
 	</body>
 </html>
+
+<style is:global>
+	@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400&display=swap");
+
+	:root {
+		--bg: #f5f5f5;
+		--bg2: #ebebeb;
+		--b1: #d0d0d0;
+		--b2: #b8b8b8;
+		--teal: #1a7a68;
+		--teal2: #0f5446;
+		--ora: #7c2e10;
+		--yel: #5a5a00;
+		--blu: #0e448c;
+		--text: #080808;
+		--text2: #1a1a1a;
+		--text3: #777;
+		--white: #030303;
+	}
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+
+	html,
+	body {
+		height: 100%;
+	}
+
+	body {
+		background: var(--bg);
+		color: var(--text);
+		font-family: "IBM Plex Mono", monospace;
+		font-size: 14px;
+		line-height: 1.65;
+		transition:
+			background 0.2s,
+			color 0.2s;
+		overflow: hidden;
+	}
+
+	.btn {
+		padding: 6px 16px;
+		font-family: "IBM Plex Mono", monospace;
+		font-size: 13px;
+		text-decoration: none;
+		border: 1px solid var(--b2);
+		color: var(--text2);
+		background: transparent;
+		transition: all 0.12s;
+	}
+
+	.btn:hover {
+		border-color: var(--teal);
+		color: var(--teal);
+	}
+
+	.btn.p {
+		background: var(--teal);
+		border-color: var(--teal);
+		color: #060606;
+		font-weight: 600;
+	}
+
+	.btn.p:hover {
+		background: #60d4bc;
+		border-color: #60d4bc;
+	}
+</style>
