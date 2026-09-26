@@ -1,4 +1,4 @@
-export const defaultLang = 'en' as const;
+export const defaultLang = 'es' as const;
 export const langs = ['en', 'es'] as const;
 export type Lang = (typeof langs)[number];
 
