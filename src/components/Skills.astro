@@ -1,0 +1,47 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+import RichText from './RichText.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const groups = [
+  { cat: t.skills.categories.languages, items: ['Python', 'TypeScript', 'JavaScript', 'Go', 'C#'] },
+  { cat: 'Frontend', items: ['React', 'Next.js', 'Astro', 'Vue', 'Vite'] },
+  { cat: 'Backend', items: ['FastAPI', 'Node.js', 'Supabase'] },
+  { cat: t.skills.categories.llm, items: ['OpenAI API', 'Anthropic API', 'Google Gemini', 'Model Context Protocol', 'Agentic AI', 'Tool Calling', 'Prompt Engineering'] },
+  { cat: t.skills.categories.ai, items: ['PyTorch', 'Scikit-learn', 'Pandas', 'NumPy', 'OpenCV'] },
+  { cat: t.skills.categories.databases, items: ['PostgreSQL', 'SQLite', 'Neon'] },
+  { cat: t.skills.categories.tools, items: ['Git', 'GitHub', 'Postman', 'n8n', 'Docker', 'GCP', 'Cloudflare', 'Vercel', 'Render'] },
+];
+---
+
+<section id="skills" class="sec">
+  <div class="inner">
+    <div class="sh">
+      <h2 class="sh-t">{t.skills.title}</h2>
+      <div class="sh-l"></div>
+    </div>
+
+    <p class="sk-lead">
+      <RichText segs={t.skills.lead} />
+    </p>
+
+    <div class="sk-list">
+      {
+        groups.map((g) => (
+          <div class="sk-row">
+            <div class="sk-cat">{g.cat}</div>
+            <div class="sk-items">
+              {g.items.map((it) => <span class="sk-item">{it}</span>)}
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

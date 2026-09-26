@@ -1,0 +1,52 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+import { projects } from '../data/projects';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const items = [
+  { meta: projects[0], desc: t.projects.descs.accessmap },
+  { meta: projects[1], desc: t.projects.descs.finsight },
+  { meta: projects[2], desc: t.projects.descs.urbansight },
+];
+---
+
+<section id="projects" class="sec">
+  <div class="inner">
+    <div class="sh">
+      <h2 class="sh-t">{t.projects.title}</h2>
+      <div class="sh-l"></div>
+    </div>
+
+    <div class="plist">
+      {
+        items.map((p) => (
+          <article class="pl-item">
+            <div class="pl-body">
+              <h3 class="pl-n">{p.meta.name}</h3>
+              <p class="pl-d">{p.desc}</p>
+              <div class="pl-tags">
+                {p.meta.tags.map((tag) => <span>{tag}</span>)}
+              </div>
+            </div>
+            {
+              p.meta.href && (
+                <div class="pl-actions">
+                  <a href={p.meta.href} class="pl-link" target="_blank" rel="noopener">
+                    {t.projects.visit}
+                    <span class="arr">↗</span>
+                  </a>
+                </div>
+              )
+            }
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

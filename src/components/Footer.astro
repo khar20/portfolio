@@ -1,0 +1,19 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<footer>
+  <span>Oscar Rodríguez · © 2025</span>
+  <div class="fl">
+    <a href="https://github.com/khar20" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://linkedin.com/in/oscar-rodriguezdiaz" target="_blank" rel="noopener">LinkedIn</a>
+    <a class="top-btn" id="toTop">↑ {t.footer.top}</a>
+  </div>
+</footer>

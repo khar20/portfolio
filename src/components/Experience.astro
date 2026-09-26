@@ -1,0 +1,90 @@
+---
+import { useTranslations, type Lang } from '../i18n/ui';
+import RichText from './RichText.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const edu = t.experience.edu;
+---
+
+<section id="experience" class="sec">
+  <div class="inner">
+    <div class="sh">
+      <h2 class="sh-t">{t.experience.title}</h2>
+      <div class="sh-l"></div>
+    </div>
+
+    <div class="exp-box">
+      <div class="exp-tabs" role="tablist">
+        <button class="etab active" data-tab="work" role="tab" aria-selected="true">
+          {t.experience.work}
+        </button>
+        <button class="etab" data-tab="edu" role="tab" aria-selected="false">
+          {t.experience.education}
+        </button>
+      </div>
+
+      <div class="exp-body" id="body-work" role="tabpanel">
+        <div class="exp-entry">
+          <div class="exp-hd">
+            <div class="exp-tl">
+              {t.experience.workTitle}
+              <span class="exp-org"> @ ADClion IA LLC</span>
+            </div>
+            <div class="exp-per">Sept 2025 – Abr 2026</div>
+          </div>
+          <div class="exp-sub">España · {t.experience.remote}</div>
+          <ul class="exp-ul">
+            {
+              t.experience.workBullets.map((b) => (
+                <li><RichText segs={b} /></li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+
+      <div class="exp-body" id="body-edu" style="display:none" role="tabpanel">
+        <div class="exp-entry">
+          <div class="exp-hd">
+            <div class="exp-tl">
+              M.Sc. {edu[0].title}
+              <span class="exp-org"> @ Universidad Continental</span>
+            </div>
+            <div class="exp-per">Sept 2025 – {edu[0].period}</div>
+          </div>
+          <div class="exp-sub">Peru</div>
+          <ul class="exp-ul">
+            {
+              edu[0].bullets.map((b) => (
+                <li><RichText segs={b} /></li>
+              ))
+            }
+          </ul>
+        </div>
+
+        <div class="exp-entry">
+          <div class="exp-hd">
+            <div class="exp-tl">
+              {edu[1].title}
+              <span class="exp-org"> @ Universidad Privada del Norte</span>
+            </div>
+            <div class="exp-per">{edu[1].period}</div>
+          </div>
+          <div class="exp-sub">Peru</div>
+          <ul class="exp-ul">
+            {
+              edu[1].bullets.map((b) => (
+                <li><RichText segs={b} /></li>
+              ))
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,43 @@
+---
+import { sections, useTranslations, type Lang } from '../i18n/ui';
+import LangSwitcher from './LangSwitcher.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<aside id="sidebar">
+  <div id="sb-top">
+    <div class="sbh-name">Oscar Rodríguez</div>
+    <div class="sbh-role">{t.role}</div>
+    <nav class="sbh-links" aria-label="Profiles">
+      <a href="https://github.com/khar20" class="sbh-a" target="_blank" rel="noopener">GitHub <span class="arr">↗</span></a>
+      <a href="https://linkedin.com/in/oscar-rodriguezdiaz" class="sbh-a" target="_blank" rel="noopener">LinkedIn <span class="arr">↗</span></a>
+      <a href="https://kharont.dev" class="sbh-a" target="_blank" rel="noopener">kharont.dev <span class="arr">↗</span></a>
+    </nav>
+  </div>
+
+  <nav class="sb-nav" aria-label="Sections">
+    <div class="sb-nl">{t.nav.sections}</div>
+    {
+      sections.map((s) => (
+        <a class="sb-a" href={s.href} data-sec={s.id}>{t.nav[s.id]}</a>
+      ))
+    }
+  </nav>
+
+  <div class="sb-ft">
+    <div class="sb-ft-row">
+      <span id="sb-clk" class="sb-clock">--:--</span>
+      <span>Trujillo · UTC−5</span>
+    </div>
+    <div class="ctrl-group">
+      <LangSwitcher lang={lang} />
+      <button id="themeBtnSb" aria-label="Toggle theme">◑</button>
+    </div>
+  </div>
+</aside>

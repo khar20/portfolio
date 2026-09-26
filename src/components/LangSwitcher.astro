@@ -1,0 +1,21 @@
+---
+import { getRelativeLocaleUrl } from 'astro:i18n';
+import { langs, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const codes: Record<Lang, string> = { en: 'EN', es: 'ES' };
+---
+
+<select class="lang-sel" aria-label="Language">
+  {
+    langs.map((l) => (
+      <option value={getRelativeLocaleUrl(l, '')} selected={l === lang}>
+        {codes[l]}
+      </option>
+    ))
+  }
+</select>

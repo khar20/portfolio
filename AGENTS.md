@@ -1,12 +1,30 @@
+# AGENTS.md
+
 ## Development
 
-When starting the dev server, use background mode:
+Run the dev server in background mode:
 
 ```
 astro dev --background
 ```
 
-Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+Manage it with `astro dev stop`, `astro dev status`, and `astro dev logs`.
+
+Verify builds with `pnpm build` (output in `dist/`).
+
+## Project structure
+
+- `src/i18n/ui.ts` — single source of truth for all user-facing strings (`en`/`es`). Add new text here, never hardcode in markup.
+- `src/data/projects.ts` — shared project metadata (name, tags, link); descriptions live in `src/i18n/ui.ts`.
+- `src/pages/` — `index.astro` (EN, `/`) and `es/index.astro` (ES, `/es`) via Astro i18n routing.
+- `src/components/` — one component per page section.
+- `src/styles/global.css` — global stylesheet (not scoped). Keep all global selectors here.
+- `src/scripts/main.js` — bundled client script (browser behavior, theme, language switch, contact form).
+- `src/layouts/` — `BaseLayout` (html/head) and `PortfolioLayout` (page shell).
+
+## i18n
+
+Locales are `en` (default) and `es`. Add a locale in `src/i18n/ui.ts`, `astro.config.mjs`, and `src/components/LangSwitcher.astro`.
 
 ## Documentation
 

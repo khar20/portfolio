@@ -1,0 +1,15 @@
+---
+import type { RichSeg } from '../i18n/ui';
+
+interface Props {
+  segs: RichSeg[];
+}
+
+const { segs } = Astro.props;
+---
+
+{
+  segs.map((s) =>
+    s.strong ? <strong>{s.t}</strong> : s.em ? <em>{s.t}</em> : s.t
+  )
+}

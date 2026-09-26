@@ -1,0 +1,34 @@
+---
+import '../styles/global.css';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = ui[lang];
+---
+
+<!doctype html>
+<html lang={lang} data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{t.title}</title>
+    <script is:inline>
+      (function () {
+        try {
+          var th = localStorage.getItem('theme');
+          if (th === 'light' || th === 'dark') document.documentElement.dataset.theme = th;
+        } catch (e) {}
+      })();
+    </script>
+    <script>
+      import '../scripts/main.js';
+    </script>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
