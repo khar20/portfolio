@@ -1,4 +1,6 @@
 ---
+import { Image } from 'astro:assets';
+import profile from '../assets/profile.jpg';
 import { useTranslations, type Lang } from '../i18n/ui';
 import LangSwitcher from './LangSwitcher.astro';
 
@@ -25,7 +27,9 @@ const t = useTranslations(lang);
     </div>
 
     <div class="hero-top">
-      <div class="hero-pic">OR</div>
+      <div class="hero-pic">
+        <Image src={profile} alt={t.hero.portraitAlt} class="hero-img" />
+      </div>
       <div class="hero-text">
         <h1 class="hero-name">Oscar Rodríguez.<span class="cur"></span></h1>
         <div class="hero-role">{t.role}</div>

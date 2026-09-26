@@ -33,6 +33,7 @@ export const ui = {
       viewWork: 'View work',
       resume: 'Résumé ↓',
       recognitions: 'Recognitions',
+      portraitAlt: 'Portrait of Oscar Rodríguez',
     },
     awards: [
       { rank: '2nd', name: 'Sunass Datathon 2026', detail: 'Python · Polars data pipeline' },
@@ -163,6 +164,7 @@ export const ui = {
       viewWork: 'Ver proyectos',
       resume: 'CV ↓',
       recognitions: 'Reconocimientos',
+      portraitAlt: 'Retrato de Oscar Rodríguez',
     },
     awards: [
       { rank: '2nd', name: 'Datathon Sunass 2026', detail: 'Pipeline de datos con Python · Polars' },
