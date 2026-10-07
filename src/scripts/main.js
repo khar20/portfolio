@@ -10,23 +10,30 @@ tick(); setInterval(tick,30000);
 /* Custom cursor */
 if(window.matchMedia('(pointer:fine)').matches){
   const cur=document.getElementById('cur');
+  const body=document.body;
   document.addEventListener('mousemove',e=>{
     cur.style.left=e.clientX+'px';
     cur.style.top=e.clientY+'px';
   },{passive:true});
 
-  const hoverSel='a,button,[onclick],.pl-item,.soc,.etab,.pl-link,.sbh-a,.sb-a,.ci-link,.cf-btn,.sk-item,.award-item,.lang,.sk-row,.hb-label';
-  document.querySelectorAll(hoverSel).forEach(el=>{
-    el.addEventListener('mouseenter',()=>document.body.classList.add('cur-hover'));
-    el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-hover'));
+  const CLK='a,button,[onclick],.pl-link,.sbh-a,.sb-a,.ci-link,.cf-btn,.etab,.soc';
+  const HOV='.pl-item,.sk-item,.sk-row,.award-item,.lang,.hb-label';
+  document.addEventListener('mouseover',e=>{
+    const isClk=e.target.closest(CLK);
+    body.classList.toggle('cur-link',!!isClk);
+    body.classList.toggle('cur-hov',!isClk&&!!e.target.closest(HOV));
   });
   document.querySelectorAll('input,textarea,select').forEach(el=>{
-    el.addEventListener('mouseenter',()=>document.body.classList.add('cur-text'));
-    el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-text'));
+    el.addEventListener('mouseenter',()=>body.classList.add('cur-text'));
+    el.addEventListener('mouseleave',()=>body.classList.remove('cur-text'));
   });
 
-  document.addEventListener('mousedown',()=>document.body.classList.add('cur-click'));
-  document.addEventListener('mouseup',()=>document.body.classList.remove('cur-click'));
+  document.addEventListener('mousedown',()=>{
+    body.classList.add('cur-click');
+    cur.style.animation='none';
+    requestAnimationFrame(()=>{cur.style.animation='spinOnce .3s ease'});
+  });
+  document.addEventListener('mouseup',()=>body.classList.remove('cur-click'));
   document.addEventListener('mouseleave',()=>cur.style.opacity='0');
   document.addEventListener('mouseenter',()=>cur.style.opacity='');
 }

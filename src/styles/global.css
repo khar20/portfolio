@@ -59,40 +59,44 @@ a{color:inherit}
   #cur{
     position:fixed;top:0;left:0;
     width:8px;height:8px;background:var(--teal);
-    border:0 solid var(--teal);border-radius:1px;
     box-sizing:border-box;
     transform:translate(-50%,-50%) rotate(45deg);
     transition:
-      width .24s var(--ease),height .24s var(--ease),
-      background .24s var(--ease),border-width .24s var(--ease),
-      border-radius .24s var(--ease),transform .24s var(--ease);
+      width .1s,height .1s,background .1s,
+      border-width .1s,border-radius .1s,transform .1s,opacity .15s;
     pointer-events:none;z-index:99999;
-    will-change:left,top,transform,width,height;
+    will-change:left,top;
   }
   #cur::after{
     content:'';position:absolute;top:50%;left:50%;
     width:4px;height:4px;background:var(--teal);border-radius:50%;
     transform:translate(-50%,-50%) scale(0);
-    transition:transform .24s var(--ease) .04s;
+    transition:transform .1s var(--ease) .04s;
   }
-  body.cur-hover #cur{
+  /* hoverables: slight variation of default */
+  body.cur-hov #cur{width:12px;height:12px}
+  /* clickables: ring */
+  body.cur-link #cur{
     width:32px;height:32px;background:transparent;
-    border-width:1.5px;border-radius:50%;
+    border:1.5px solid var(--teal);border-radius:50%;
     transform:translate(-50%,-50%) rotate(0deg);
   }
-  body.cur-hover #cur::after{transform:translate(-50%,-50%) scale(1)}
+  body.cur-link #cur::after{transform:translate(-50%,-50%) scale(1)}
+  /* text fields: vertical bar */
   body.cur-text #cur{
-    width:2px;height:22px;background:var(--teal);
+    width:2px;height:22px;
     border-width:0;border-radius:1px;
     transform:translate(-50%,-50%) rotate(0deg);
   }
   body.cur-text #cur::after{transform:translate(-50%,-50%) scale(0)}
-  body.cur-click #cur{background:var(--white)}
-  body.cur-click.cur-hover #cur{background:transparent;border-color:var(--white)}
-  body.cur-click.cur-hover #cur::after{background:var(--white)}
+  /* press */
+  body.cur-click #cur{background:var(--white);width:6px;height:6px}
+  body.cur-click.cur-link #cur{background:var(--white);width:26px;height:26px}
+  body.cur-click.cur-link #cur::after{background:var(--teal)}
 }
 @media(pointer:coarse){#cur{display:none}}
 
+@keyframes spinOnce{from{transform:translate(-50%,-50%) rotate(45deg)}to{transform:translate(-50%,-50%) rotate(405deg)}}
 @keyframes blink {0%,100%{opacity:1}50%{opacity:0}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes pulse {0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
