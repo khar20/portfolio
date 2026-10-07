@@ -65,6 +65,14 @@ function onScroll(){
     const el=document.getElementById(id);
     if(el && probe>=el.offsetTop) active=id;
   });
+  const contact=document.getElementById('contact');
+  if(contact){
+    const rect=contact.getBoundingClientRect();
+    const view=mainEl.clientHeight;
+    const atBottom=mainEl.scrollTop+view>=mainEl.scrollHeight-4;
+    const visible=atBottom||(rect.top<view*.75&&rect.bottom>0);
+    if(visible) active='contact';
+  }
   navLinks.forEach(el=>el.classList.toggle('active',el.dataset.sec===active));
 }
 mainEl.addEventListener('scroll',()=>{
