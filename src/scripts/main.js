@@ -1,4 +1,3 @@
-/* Clock */
 function tick(){
   const d=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Lima'}));
   const p=x=>String(x).padStart(2,'0');
@@ -7,7 +6,6 @@ function tick(){
 }
 tick(); setInterval(tick,30000);
 
-/* Custom cursor */
 if(window.matchMedia('(pointer:fine)').matches){
   const cur=document.getElementById('cur');
   const body=document.body;
@@ -38,17 +36,14 @@ if(window.matchMedia('(pointer:fine)').matches){
   document.addEventListener('mouseenter',()=>cur.style.opacity='');
 }
 
-/* Elements */
 const mainEl=document.getElementById('main');
 const progEl=document.getElementById('prog');
 const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-/* Sidebar reveal */
 new IntersectionObserver(([e])=>{
   document.body.classList.toggle('scrolled',!e.isIntersecting);
 },{root:mainEl,threshold:0.05}).observe(document.getElementById('hero'));
 
-/* Section reveal */
 const secObs=new IntersectionObserver(entries=>{
   entries.forEach(e=>{
     if(e.isIntersecting){ e.target.classList.add('vis'); secObs.unobserve(e.target); }
@@ -56,7 +51,6 @@ const secObs=new IntersectionObserver(entries=>{
 },{root:mainEl,threshold:.08});
 document.querySelectorAll('.sec').forEach(s=>secObs.observe(s));
 
-/* Scroll progress + active nav */
 const SECS=['projects','experience','skills','contact'];
 const navLinks=document.querySelectorAll('[data-sec]');
 let raf=null;
@@ -79,7 +73,6 @@ mainEl.addEventListener('scroll',()=>{
 },{passive:true});
 onScroll();
 
-/* Smooth anchor navigation */
 function goTo(id){
   const t=document.getElementById(id);
   if(!t) return;
@@ -98,7 +91,6 @@ document.getElementById('toTop').addEventListener('click',()=>{
   mainEl.scrollTo({top:0,behavior:reduce?'auto':'smooth'});
 });
 
-/* Experience tabs */
 document.querySelectorAll('.etab').forEach(t=>{
   t.addEventListener('click',()=>{
     document.querySelectorAll('.etab').forEach(x=>{
@@ -120,7 +112,6 @@ document.querySelectorAll('.etab').forEach(t=>{
   });
 });
 
-/* Theme */
 function toggleTheme(){
   const next=document.documentElement.dataset.theme==='dark' ? 'light' : 'dark';
   document.documentElement.dataset.theme=next;
@@ -130,12 +121,10 @@ function toggleTheme(){
   document.getElementById(id)?.addEventListener('click',toggleTheme);
 });
 
-/* Language switcher (navigates to the alternate locale) */
 document.querySelectorAll('.lang-sel').forEach(sel=>{
   sel.addEventListener('change',()=>{ location.href=sel.value; });
 });
 
-/* Contact form */
 const form=document.getElementById('contactForm');
 let msgs={};
 try{ msgs=JSON.parse(form.dataset.msgs||'{}'); }catch(e){}

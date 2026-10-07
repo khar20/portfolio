@@ -2,6 +2,7 @@
 import type { Lang } from '../i18n/ui';
 import BaseLayout from './BaseLayout.astro';
 import Cursor from '../components/Cursor.astro';
+import ThemeBackground from '../components/Background/ThemeBackground';
 import MobileBar from '../components/MobileBar.astro';
 import Sidebar from '../components/Sidebar.astro';
 import Hero from '../components/Hero.astro';
@@ -20,6 +21,7 @@ const { lang } = Astro.props;
 
 <BaseLayout lang={lang}>
   <Cursor />
+  <ThemeBackground client:load />
   <div id="page">
     <div id="prog"></div>
 

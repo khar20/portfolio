@@ -1,6 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 
-/* TOKENS */
 [data-theme="dark"]{
   --bg:#0f0f0f;--bg2:#161616;--b1:#222;--b2:#2e2e2e;
   --teal:#4ec9b0;--teal2:#2a7a69;
@@ -53,7 +52,6 @@ body{
 button{font-family:inherit;font-size:inherit;color:inherit}
 a{color:inherit}
 
-/* CURSOR */
 @media(pointer:fine){
   body, body *{cursor:none !important}
   #cur{
@@ -73,23 +71,19 @@ a{color:inherit}
     transform:translate(-50%,-50%) scale(0);
     transition:transform .1s var(--ease) .04s;
   }
-  /* hoverables: slight variation of default */
   body.cur-hov #cur{width:12px;height:12px}
-  /* clickables: ring */
   body.cur-link #cur{
     width:32px;height:32px;background:transparent;
     border:1.5px solid var(--teal);border-radius:50%;
     transform:translate(-50%,-50%) rotate(0deg);
   }
   body.cur-link #cur::after{transform:translate(-50%,-50%) scale(1)}
-  /* text fields: vertical bar */
   body.cur-text #cur{
     width:2px;height:22px;
     border-width:0;border-radius:1px;
     transform:translate(-50%,-50%) rotate(0deg);
   }
   body.cur-text #cur::after{transform:translate(-50%,-50%) scale(0)}
-  /* press */
   body.cur-click #cur{background:var(--white);width:6px;height:6px}
   body.cur-click.cur-link #cur{background:var(--white);width:26px;height:26px}
   body.cur-click.cur-link #cur::after{background:var(--teal)}
@@ -97,11 +91,19 @@ a{color:inherit}
 @media(pointer:coarse){#cur{display:none}}
 
 @keyframes spinOnce{from{transform:translate(-50%,-50%) rotate(45deg)}to{transform:translate(-50%,-50%) rotate(405deg)}}
+.bg-fx{position:fixed;inset:0;z-index:-1;pointer-events:none}
+.bg-layer{position:absolute;inset:0}
+.bg-layer canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+.bg-hero{
+  bottom:auto;height:100vh;
+  -webkit-mask-image:linear-gradient(#000 55%,transparent);
+  mask-image:linear-gradient(#000 55%,transparent);
+}
+
 @keyframes blink {0%,100%{opacity:1}50%{opacity:0}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @keyframes pulse {0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.85)}}
 
-/* SHARED */
 .ctrl-group{display:flex;align-items:center;gap:2px}
 .ctrl-group select{
   background:transparent;border:none;outline:none;
@@ -131,7 +133,6 @@ a{color:inherit}
   font-weight:500;
 }
 
-/* LAYOUT */
 #page{position:fixed;inset:0;display:flex;flex-direction:column}
 #prog{
   position:absolute;top:0;left:0;right:0;height:1px;z-index:500;
@@ -166,7 +167,6 @@ a{color:inherit}
 
 .page-body{display:flex;flex:1;overflow:hidden}
 
-/* SIDEBAR */
 #sidebar{
   width:0;overflow:hidden;flex-shrink:0;
   background:var(--bg);
@@ -243,7 +243,6 @@ body.scrolled #sb-top{opacity:1;transform:none}
 }
 .sb-clock{color:var(--teal);font-variant-numeric:tabular-nums}
 
-/* MAIN */
 #main{flex:1;overflow-y:auto;overflow-x:hidden;position:relative}
 #main::-webkit-scrollbar{width:4px}
 #main::-webkit-scrollbar-track{background:transparent}
@@ -251,7 +250,6 @@ body.scrolled #sb-top{opacity:1;transform:none}
 #main::-webkit-scrollbar-thumb:hover{background:var(--teal2)}
 .inner{max-width:900px;margin:0 auto}
 
-/* HERO */
 #hero{
   padding:var(--pad-y) var(--pad-x) clamp(40px,5vw,60px);
   position:relative;
@@ -372,7 +370,6 @@ body.scrolled #sb-top{opacity:1;transform:none}
 .soc:hover{color:var(--teal);transform:translateY(-2px)}
 .soc svg{width:15px;height:15px;fill:currentColor}
 
-/* hero bottom — recognitions only */
 .hero-bottom{
   border-top:1px solid var(--rule);
   padding-top:26px;
@@ -428,7 +425,6 @@ body.scrolled #sb-top{opacity:1;transform:none}
   white-space:nowrap;
 }
 
-/* SECTIONS */
 .sec{
   padding:var(--pad-y) var(--pad-x);
   opacity:0;transform:translateY(12px);
@@ -459,7 +455,6 @@ body.scrolled #sb-top{opacity:1;transform:none}
 }
 .sec.vis .sh-l::after{transform:scaleX(1)}
 
-/* PROJECTS */
 .plist{display:flex;flex-direction:column}
 .pl-item{
   display:flex;gap:36px;align-items:flex-start;
@@ -537,7 +532,6 @@ body.scrolled #sb-top{opacity:1;transform:none}
 }
 .pl-link:hover .arr{transform:translate(2px,-2px)}
 
-/* EXPERIENCE */
 .exp-box{
   border:1px solid var(--rule);
   background:var(--field-bg);
@@ -615,7 +609,6 @@ body.scrolled #sb-top{opacity:1;transform:none}
   font-size:14.5px;
 }
 
-/* SKILLS */
 .sk-lead{
   font-size:var(--fs-body);color:var(--text2);
   line-height:1.72;max-width:62ch;margin-bottom:36px;
@@ -670,7 +663,6 @@ body.scrolled #sb-top{opacity:1;transform:none}
 .sk-item:hover{color:var(--teal)}
 .sk-item:hover::after{transform:scaleX(1)}
 
-/* CONTACT */
 .contact-layout{
   display:grid;grid-template-columns:1fr 1.1fr;
   gap:clamp(32px,5vw,72px);
@@ -760,7 +752,6 @@ textarea.cf-i{resize:vertical;min-height:88px;line-height:1.6}
 .cf-btn:active{transform:scale(.99)}
 .cf-btn:disabled{cursor:default;opacity:.85}
 
-/* FOOTER */
 footer{
   padding:26px var(--pad-x);
   border-top:1px solid var(--rule);
@@ -781,7 +772,6 @@ footer a:hover{color:var(--teal)}
 [data-lang]{display:none}
 [data-lang].on{display:inline}
 
-/* RESPONSIVE */
 @media(max-width:900px){
   .sk-row{grid-template-columns:160px 1fr}
 }

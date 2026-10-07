@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Oscar Rodríguez</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400&display=swap');
+
+[data-theme="dark"]{
+  --bg:#0f0f0f;--bg2:#161616;--b1:#222;--b2:#2e2e2e;
+  --teal:#4ec9b0;--teal2:#2a7a69;
+  --ora:#ce9178;--yel:#dcdcaa;--blu:#569cd6;
+  --text:#e8e8e8;--text2:#c8c8c8;--text3:#686868;
+  --white:#f5f5f5;
+}
+[data-theme="light"]{
+  --bg:#f5f5f5;--bg2:#ebebeb;--b1:#d0d0d0;--b2:#b8b8b8;
+  --teal:#1a7a68;--teal2:#0f5446;
+  --ora:#7c2e10;--yel:#5a5a00;--blu:#0e448c;
+  --text:#080808;--text2:#1a1a1a;--text3:#777;
+  --white:#030303;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:'IBM Plex Mono',monospace;
+  font-size:14px;line-height:1.65;
+  transition:background .2s,color .2s;
+  overflow:hidden;
+}
+
+/* ── CURSOR (desktop only) ── */
+@media(pointer:fine){
+  body{cursor:none}
+  input,textarea,select{cursor:text}
+  #cur{
+    position:fixed;pointer-events:none;z-index:99999;
+    width:8px;height:8px;background:var(--teal);
+    transform:translate(-50%,-50%) rotate(45deg);
+    transition:width .1s,height .1s,background .1s,opacity .15s;
+    will-change:left,top;
+  }
+  body.cur-hover #cur{width:12px;height:12px}
+  body.cur-click #cur{background:var(--white);width:6px;height:6px}
+}
+@media(pointer:coarse){
+  #cur{display:none}
+}
+
+@keyframes spinOnce{from{transform:translate(-50%,-50%) rotate(45deg)}to{transform:translate(-50%,-50%) rotate(405deg)}}
+@keyframes blink {0%,100%{opacity:1}50%{opacity:0}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pulse {0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── SHARED: bordered control group (used in hero eyebrow + sidebar footer) ── */
+.ctrl-group{display:flex;align-items:center;border:1px solid var(--b2)}
+.ctrl-group select{
+  background:transparent;border:none;border-right:1px solid var(--b2);outline:none;
+  color:var(--text3);font-family:inherit;font-size:11px;
+  cursor:pointer;appearance:none;padding:3px 10px;
+  transition:color .12s;
+}
+.ctrl-group select:hover{color:var(--teal)}
+.ctrl-group select option{background:var(--bg)}
+.ctrl-group button{
+  padding:3px 10px;font-size:12px;color:var(--text3);
+  background:transparent;border:none;font-family:inherit;
+  cursor:pointer;transition:color .12s;
+}
+.ctrl-group button:hover{color:var(--teal)}
+
+/* ── SHARED: availability dot ── */
+.sdot{width:5px;height:5px;border-radius:50%;background:var(--teal);animation:pulse 2.5s ease infinite;flex-shrink:0}
+.avail{display:flex;align-items:center;gap:5px;color:var(--teal);font-size:11px}
+
+/* ── LAYOUT ── */
+#page{position:fixed;inset:0;display:flex;flex-direction:column}
+
+/* mobile top bar — visible only on touch devices */
+#mob-bar{
+  display:none;
+  height:36px;border-bottom:1px solid var(--b1);
+  align-items:center;justify-content:space-between;
+  padding:0 18px;font-size:12px;color:var(--text3);
+  background:var(--bg);flex-shrink:0;
+}
+#mob-bar .avail{font-size:11px}
+/* override ctrl-group border for mob-bar */
+#mob-bar .ctrl-group{border-color:var(--b1)}
+#mob-bar .ctrl-group select{border-right-color:var(--b1)}
+
+@media(max-width:768px){
+  #mob-bar{display:flex}
+  body{overflow:hidden} /* keep scroll on #main */
+}
+
+/* desktop page body */
+.page-body{display:flex;flex:1;overflow:hidden}
+
+/* ── SIDEBAR ── */
+#sidebar{
+  width:0;overflow:hidden;flex-shrink:0;
+  background:var(--bg);border-right:1px solid transparent;
+  display:flex;flex-direction:column;
+  transition:width .4s cubic-bezier(.4,0,.2,1),border-color .4s;
+}
+body.scrolled #sidebar{width:230px;border-color:var(--b1)}
+
+#sb-top{padding:22px 16px 16px;border-bottom:1px solid var(--b1);flex-shrink:0;opacity:0;transition:opacity .25s .15s}
+body.scrolled #sb-top{opacity:1}
+.sbh-pic{width:40px;height:40px;border:1px solid var(--b1);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:var(--teal);margin-bottom:10px}
+.sbh-name{font-size:15px;font-weight:600;color:var(--white);margin-bottom:3px}
+.sbh-role{font-size:11px;color:var(--teal);margin-bottom:14px}
+.sbh-links{display:flex;flex-direction:column;border:1px solid var(--b1)}
+.sbh-a{padding:5px 9px;font-size:12px;color:var(--text2);text-decoration:none;border-bottom:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center;transition:all .12s}
+.sbh-a:last-child{border-bottom:none}
+.sbh-a:hover{color:var(--teal);background:rgba(78,201,176,.05);padding-left:14px}
+.sbh-a .arr{color:var(--text3);font-size:11px;transition:color .12s}
+.sbh-a:hover .arr{color:var(--teal)}
+
+.sb-nav{padding:10px 0;border-bottom:1px solid var(--b1)}
+.sb-nl{padding:0 14px 5px;font-size:10px;color:var(--text3);letter-spacing:.09em;text-transform:uppercase}
+.sb-a{display:block;padding:4px 14px;font-size:13px;color:var(--text2);text-decoration:none;border-left:2px solid transparent;transition:all .12s}
+.sb-a:hover{color:var(--text);background:rgba(255,255,255,.02)}
+.sb-a.active{color:var(--teal);border-left-color:var(--teal);background:rgba(78,201,176,.04)}
+
+.sb-ft{margin-top:auto;padding:14px 16px;border-top:1px solid var(--b1);font-size:11px;color:var(--text3)}
+.sb-ft-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:5px}
+.sb-clock{color:var(--teal);font-weight:500;font-size:12px}
+/* sidebar ctrl-group uses b1 border */
+.sb-ft .ctrl-group{border-color:var(--b1);margin-top:10px}
+.sb-ft .ctrl-group select{border-right-color:var(--b1)}
+
+/* ── MAIN ── */
+#main{flex:1;overflow-y:auto;overflow-x:hidden}
+#main::-webkit-scrollbar{width:3px}
+#main::-webkit-scrollbar-thumb{background:var(--b2)}
+.inner{max-width:920px;margin:0 auto}
+
+/* ── HERO ── */
+#hero{padding:52px 68px 44px;border-bottom:1px solid var(--b1);animation:fadeUp .35s ease both}
+
+/* eyebrow */
+.hero-ey{
+  display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+  font-size:11px;color:var(--text3);
+  margin-bottom:28px;max-width:920px;margin-left:auto;margin-right:auto;
+}
+/* hero-ey ctrl-group: push to far right */
+.hero-ey .ctrl-group{margin-left:auto}
+
+.hero-top{display:flex;align-items:flex-start;gap:32px;margin-bottom:32px;max-width:920px;margin-left:auto;margin-right:auto}
+.hero-pic{flex-shrink:0;width:84px;height:84px;border:1px solid var(--b1);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:600;color:var(--teal)}
+.hero-text{flex:1}
+.hero-name{font-size:clamp(28px,4vw,54px);font-weight:600;color:var(--white);line-height:1.04;letter-spacing:-.5px;margin-bottom:5px}
+.hero-name .cur{display:inline-block;width:3px;height:.85em;background:var(--teal);vertical-align:middle;margin-left:4px;animation:blink 1s step-end infinite}
+.hero-role{font-size:14px;color:var(--teal);margin-bottom:12px}
+.hero-desc{font-family:'IBM Plex Sans',sans-serif;font-size:14.5px;font-weight:300;color:var(--text2);max-width:500px;line-height:1.85;margin-bottom:16px}
+
+/* languages subsection — dedicated block under desc */
+.hero-langs{margin-bottom:18px}
+.hero-langs-head{
+  display:flex;align-items:center;gap:6px;
+  font-size:10px;color:var(--text3);
+  letter-spacing:.07em;text-transform:uppercase;
+  margin-bottom:8px;
+}
+.hero-langs-head svg{
+  width:13px;height:13px;
+  fill:none;stroke:currentColor;stroke-width:1.7;
+  stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;
+}
+.hero-langs-list{
+  display:flex;align-items:center;
+  font-family:'IBM Plex Sans',sans-serif;
+  font-size:13.5px;font-weight:300;color:var(--text2);
+}
+.lang-item{
+  padding-right:12px;margin-right:12px;
+  border-right:1px solid var(--b2);
+  line-height:1;
+}
+.lang-item:last-child{padding-right:0;margin-right:0;border-right:none}
+
+/* actions row */
+.hero-ac{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.btn{padding:6px 16px;font-family:'IBM Plex Mono',monospace;font-size:13px;text-decoration:none;border:1px solid var(--b2);color:var(--text2);background:transparent;transition:all .12s}
+.btn:hover{border-color:var(--teal);color:var(--teal)}
+.btn.p{background:var(--teal);border-color:var(--teal);color:#060606;font-weight:600}
+.btn.p:hover{background:#60d4bc;border-color:#60d4bc}
+.soc-sep{width:1px;height:18px;background:var(--b2);margin:0 2px}
+.soc{width:28px;height:28px;display:flex;align-items:center;justify-content:center;border:1px solid var(--b2);color:var(--text3);text-decoration:none;transition:all .12s}
+.soc:hover{border-color:var(--teal);color:var(--teal);background:rgba(78,201,176,.06)}
+.soc svg{width:13px;height:13px;fill:currentColor}
+
+/* hero-bottom: 1×3 horizontal grid, 3 cells */
+.hero-bottom{
+  max-width:920px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:1px;background:var(--b1);border:1px solid var(--b1);
+}
+.hb-cell{background:var(--bg);padding:18px 20px}
+.hb-about-icon{font-size:15px;color:var(--text3);margin-bottom:8px}
+.hb-about-label{font-size:10px;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px}
+.hb-about-val{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:300;color:var(--text2);line-height:1.6}
+
+/* ── SECTIONS ── */
+.sec{padding:36px 68px;border-bottom:1px solid var(--b1);opacity:0;transform:translateY(5px);transition:opacity .3s,transform .3s}
+.sec.vis{opacity:1;transform:none}
+.sh{display:flex;align-items:baseline;gap:10px;margin-bottom:22px}
+.sh-t{font-size:13px;font-weight:600;color:var(--white);letter-spacing:.04em;text-transform:uppercase}
+.sh-l{flex:1;height:1px;background:var(--b1)}
+
+/* ── PROJECTS — vertical list ── */
+.plist{display:flex;flex-direction:column;border:1px solid var(--b1)}
+.pl-item{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;padding:20px 22px;border-bottom:1px solid var(--b1);transition:background .12s}
+.pl-item:last-child{border-bottom:none}
+.pl-item:hover{background:var(--bg2)}
+.pl-item:hover .pl-n{color:var(--teal)}
+.pl-n{font-size:14px;font-weight:600;color:var(--white);margin-bottom:6px;transition:color .12s}
+.pl-d{font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:300;color:var(--text2);line-height:1.7;margin-bottom:10px}
+.pl-tags{display:flex;gap:5px;flex-wrap:wrap}
+.tag{font-size:10px;padding:1px 7px;border:1px solid var(--b2);color:var(--text3)}
+.tag.py{border-color:rgba(78,201,176,.3);color:var(--teal)}
+.tag.js{border-color:rgba(220,220,170,.3);color:var(--yel)}
+.tag.go{border-color:rgba(86,156,214,.3);color:var(--blu)}
+.tag.web{border-color:rgba(206,145,120,.3);color:var(--ora)}
+.pl-links{display:flex;flex-direction:column;gap:6px;align-items:flex-end;padding-top:2px}
+.pcl{font-size:11px;color:var(--text3);text-decoration:none;transition:color .12s;white-space:nowrap}
+.pcl:hover{color:var(--teal)}
+
+/* ── EXPERIENCE ── */
+.exp-box{border:1px solid var(--b1);overflow:hidden}
+.exp-tabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--b1)}
+.etab{padding:8px 20px;font-size:12px;color:var(--text3);border:none;background:transparent;font-family:inherit;transition:color .12s;border-right:1px solid var(--b1)}
+.etab:last-child{border-right:none}
+.etab.active{color:var(--teal);background:var(--bg);border-bottom:1px solid var(--bg);margin-bottom:-1px}
+.etab:hover:not(.active){color:var(--text2)}
+.exp-body{padding:24px}
+.exp-entry{padding-bottom:24px;border-bottom:1px solid var(--b1);margin-bottom:24px}
+.exp-entry:last-child{padding-bottom:0;border-bottom:none;margin-bottom:0}
+.exp-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:2px;flex-wrap:wrap;gap:6px}
+.exp-tl{font-size:14px;font-weight:600;color:var(--white)}
+.exp-org{color:var(--teal)}
+.exp-per{font-size:11px;color:var(--text3)}
+.exp-sub{font-size:11px;color:var(--text3);margin-bottom:12px}
+.exp-ul{list-style:none}
+.exp-ul li{position:relative;padding-left:14px;font-family:'IBM Plex Sans',sans-serif;font-size:13px;font-weight:300;color:var(--text2);margin-bottom:6px;line-height:1.75}
+.exp-ul li::before{content:'│';position:absolute;left:0;color:var(--b2)}
+.exp-ul li strong{color:var(--ora);font-weight:500;font-family:'IBM Plex Mono',monospace}
+.exp-meta{margin-top:12px;padding:8px 11px;border:1px solid var(--b1);background:var(--bg);display:grid;grid-template-columns:72px 1fr;gap:3px 9px;font-size:11px}
+.exp-mk{color:var(--text3)}
+.exp-mv{color:var(--text2)}
+.exp-badge{display:inline-block;margin-top:10px;font-size:10px;padding:2px 8px;border:1px solid rgba(78,201,176,.3);color:var(--teal);letter-spacing:.04em}
+
+/* ── SKILLS — 2-col flexible grid of boxes (v11 style, v12 minimalism) ── */
+.sk-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.ab{border:1px solid var(--b1);overflow:hidden}
+.ab-h{background:var(--bg2);border-bottom:1px solid var(--b1);padding:7px 14px;font-size:11px;font-weight:600;color:var(--white);letter-spacing:.04em;text-transform:uppercase}
+.lc{padding:12px 14px}
+.ll{list-style:none}
+.ll li{padding:4px 0;font-size:13px;color:var(--text2);border-bottom:1px solid var(--b1);transition:color .12s}
+.ll li:last-child{border-bottom:none}
+.ll li:hover{color:var(--teal)}
+
+/* ── CONTACT ── */
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.contact-info{border:1px solid var(--b1);overflow:hidden}
+.ci-h{background:var(--bg2);border-bottom:1px solid var(--b1);padding:7px 14px;font-size:11px;font-weight:600;color:var(--white);letter-spacing:.04em;text-transform:uppercase}
+.ci-body{padding:20px}
+.ci-tagline{font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:300;color:var(--text2);line-height:1.8;margin-bottom:20px}
+.ci-links{display:flex;flex-direction:column;border:1px solid var(--b1)}
+.ci-link{padding:7px 11px;font-size:12px;color:var(--text2);text-decoration:none;border-bottom:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center;transition:all .12s}
+.ci-link:last-child{border-bottom:none}
+.ci-link:hover{color:var(--teal);background:rgba(78,201,176,.05);padding-left:16px}
+.ci-link .arr{color:var(--text3);font-size:11px;transition:color .12s}
+.ci-link:hover .arr{color:var(--teal)}
+.cw{border:1px solid var(--b1);overflow:hidden}
+.cw-h{background:var(--bg2);border-bottom:1px solid var(--b1);padding:7px 14px;font-size:11px;font-weight:600;color:var(--white);letter-spacing:.04em;text-transform:uppercase}
+.cf{padding:20px;display:flex;flex-direction:column;gap:12px}
+.cf-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cf-f{display:flex;flex-direction:column;gap:5px}
+.cf-l{font-size:10px;color:var(--text3);letter-spacing:.07em;text-transform:uppercase}
+.cf-i{background:var(--bg);border:1px solid var(--b1);color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;padding:8px 11px;outline:none;width:100%;transition:border-color .12s}
+.cf-i:focus{border-color:var(--teal)}
+.cf-i::placeholder{color:var(--text3)}
+textarea.cf-i{resize:vertical;min-height:80px}
+.cf-btn{width:100%;padding:9px;background:transparent;border:1px solid var(--b2);color:var(--text2);font-family:'IBM Plex Mono',monospace;font-size:12px;transition:all .12s}
+.cf-btn:hover{border-color:var(--teal);color:var(--teal)}
+
+footer{padding:14px 68px;border-top:1px solid var(--b1);display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--text3)}
+footer a{color:var(--text3);text-decoration:none;transition:color .12s}
+footer a:hover{color:var(--teal)}
+.fl{display:flex;gap:16px}
+
+[data-lang]{display:none}[data-lang].on{display:inline}
+
+@media(max-width:768px){
+  #sidebar{display:none!important}
+  /* hide eyebrow controls — handled by mob-bar */
+  .hero-ey .ctrl-group{display:none}
+  .hero-ey .avail{margin-left:auto}
+  #hero,.sec,footer{padding-left:20px;padding-right:20px}
+  .hero-top{gap:18px}
+  .hero-bottom{grid-template-columns:1fr}
+  .sk-grid{grid-template-columns:1fr}
+  .contact-layout{grid-template-columns:1fr}
+  .cf-row{grid-template-columns:1fr}
+  footer{padding-left:20px;padding-right:20px}
+}
+@media(max-width:480px){
+  .hero-top{flex-direction:column}
+  .hero-pic{width:64px;height:64px;font-size:18px}
+}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+
+<div id="page">
+
+  <!-- Mobile top bar: lang + theme accessible on touch -->
+  <div id="mob-bar">
+    <div class="avail"><span class="sdot"></span><span data-lang="en" class="on">Open to work</span><span data-lang="es">Disponible</span></div>
+    <div class="ctrl-group">
+      <select id="langSelMob"><option value="en">EN</option><option value="es">ES</option></select>
+      <button id="themeBtnMob">◑</button>
+    </div>
+  </div>
+
+  <div class="page-body">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar">
+      <div id="sb-top">
+        <div class="sbh-pic">OR</div>
+        <div class="sbh-name">Oscar Rodríguez</div>
+        <div class="sbh-role"><span data-lang="en" class="on">Software Engineer &amp; Data Scientist</span><span data-lang="es">Ingeniero de Software &amp; Datos</span></div>
+        <div class="sbh-links">
+          <a href="#" class="sbh-a">GitHub <span class="arr">↗</span></a>
+          <a href="#" class="sbh-a">LinkedIn <span class="arr">↗</span></a>
+          <a href="#" class="sbh-a"><span data-lang="en" class="on">Résumé</span><span data-lang="es">CV</span> <span class="arr">↓</span></a>
+        </div>
+      </div>
+      <div class="sb-nav">
+        <div class="sb-nl"><span data-lang="en" class="on">Sections</span><span data-lang="es">Secciones</span></div>
+        <a class="sb-a" data-sec="projects"   onclick="scrollTo('projects')"><span data-lang="en" class="on">Projects</span><span data-lang="es">Proyectos</span></a>
+        <a class="sb-a" data-sec="experience" onclick="scrollTo('experience')"><span data-lang="en" class="on">Experience</span><span data-lang="es">Experiencia</span></a>
+        <a class="sb-a" data-sec="skills"     onclick="scrollTo('skills')"><span data-lang="en" class="on">Skills</span><span data-lang="es">Habilidades</span></a>
+        <a class="sb-a" data-sec="contact"    onclick="scrollTo('contact')"><span data-lang="en" class="on">Contact</span><span data-lang="es">Contacto</span></a>
+      </div>
+      <div class="sb-ft">
+        <div class="sb-ft-row">
+          <span id="sb-clk" class="sb-clock">--:--</span>
+          <span>Lima · UTC−5</span>
+        </div>
+        <div class="avail" style="margin-bottom:0">
+          <span class="sdot"></span>
+          <span data-lang="en" class="on">Open to work</span><span data-lang="es">Disponible</span>
+        </div>
+        <!-- shared ctrl-group component -->
+        <div class="ctrl-group">
+          <select id="langSelSb"><option value="en">EN</option><option value="es">ES</option></select>
+          <button id="themeBtnSb">◑</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div id="main">
+
+      <!-- HERO -->
+      <div id="hero">
+        <!-- eyebrow: location, availability, ctrl-group right -->
+        <div class="hero-ey">
+          <span>Lima, Peru</span>
+          <div class="avail"><span class="sdot"></span><span data-lang="en" class="on">Open to work</span><span data-lang="es">Disponible</span></div>
+          <div class="ctrl-group">
+            <select id="langSel"><option value="en">EN</option><option value="es">ES</option></select>
+            <button id="themeBtn">◑</button>
+          </div>
+        </div>
+
+        <div class="hero-top">
+          <div class="hero-pic">OR</div>
+          <div class="hero-text">
+            <div class="hero-name">Oscar Rodríguez.<span class="cur"></span></div>
+            <div class="hero-role"><span data-lang="en" class="on">Software Engineer &amp; Data Scientist</span><span data-lang="es">Ingeniero de Software &amp; Científico de Datos</span></div>
+            <p class="hero-desc">
+              <span data-lang="en" class="on">Building human-centered products and analyzing complex datasets to uncover insights that drive real decisions.</span>
+              <span data-lang="es">Construyendo productos centrados en el usuario y analizando datos complejos para impulsar decisiones reales.</span>
+            </p>
+            <!-- Languages subsection -->
+            <div class="hero-langs">
+              <div class="hero-langs-head">
+                <!-- Globe / languages icon -->
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10"/>
+                  <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                </svg>
+                <span data-lang="en" class="on">Languages</span>
+                <span data-lang="es">Idiomas</span>
+              </div>
+              <div class="hero-langs-list">
+                <span class="lang-item"><span data-lang="en" class="on">Spanish</span><span data-lang="es">Español</span></span>
+                <span class="lang-item"><span data-lang="en" class="on">English</span><span data-lang="es">Inglés</span></span>
+                <span class="lang-item"><span data-lang="en" class="on">Portuguese</span><span data-lang="es">Portugués</span></span>
+              </div>
+            </div>
+            <div class="hero-ac">
+              <a class="btn p" onclick="scrollTo('projects')"><span data-lang="en" class="on">View work</span><span data-lang="es">Ver proyectos</span></a>
+              <a class="btn" href="#"><span data-lang="en" class="on">Résumé ↓</span><span data-lang="es">CV ↓</span></a>
+              <div class="soc-sep"></div>
+              <a href="#" class="soc" title="GitHub"><svg viewBox="0 0 24 24"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg></a>
+              <a href="#" class="soc" title="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+              <a href="mailto:oscar@example.com" class="soc" title="Email"><svg viewBox="0 0 24 24"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-.47.21-.886.54-1.17L12 13.09 23.46 4.287c.33.284.54.7.54 1.17z"/></svg></a>
+            </div>
+          </div>
+        </div>
+
+        <!-- hero-bottom: 1×3 horizontal -->
+        <div class="hero-bottom">
+          <div class="hb-cell">
+            <div class="hb-about-icon">◈</div>
+            <div class="hb-about-label"><span data-lang="en" class="on">Currently studying</span><span data-lang="es">Estudiando actualmente</span></div>
+            <div class="hb-about-val"><span data-lang="en" class="on">M.Sc. in Artificial Intelligence — LLM alignment, multi-agent systems &amp; neural architectures.</span><span data-lang="es">M.Sc. en Inteligencia Artificial — alineamiento de LLMs, sistemas multiagente y arquitecturas neuronales.</span></div>
+          </div>
+          <div class="hb-cell">
+            <div class="hb-about-icon">◍</div>
+            <div class="hb-about-label"><span data-lang="en" class="on">Interested in</span><span data-lang="es">Interesado en</span></div>
+            <div class="hb-about-val"><span data-lang="en" class="on">Interpretability research, real-world AI safety, and ML &times; public policy.</span><span data-lang="es">Investigación en interpretabilidad, seguridad de IA y la intersección de ML y política pública.</span></div>
+          </div>
+          <div class="hb-cell">
+            <div class="hb-about-icon">◬</div>
+            <div class="hb-about-label"><span data-lang="en" class="on">Outside of work</span><span data-lang="es">Fuera del trabajo</span></div>
+            <div class="hb-about-val"><span data-lang="en" class="on">Philosophy of mind, competitive chess, hiking the Andes.</span><span data-lang="es">Filosofía de la mente, ajedrez competitivo, senderismo en los Andes.</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECTS -->
+      <section id="projects" class="sec">
+        <div class="inner">
+          <div class="sh"><span class="sh-t"><span data-lang="en" class="on">Projects</span><span data-lang="es">Proyectos</span></span><div class="sh-l"></div></div>
+          <div class="plist">
+            <div class="pl-item">
+              <div>
+                <div class="pl-n">Finsight Peru</div>
+                <div class="pl-d"><span data-lang="en" class="on">Data visualization platform for analyzing Peruvian market trends using machine learning and real-time data pipelines.</span><span data-lang="es">Plataforma de visualización para analizar tendencias del mercado peruano con machine learning y pipelines en tiempo real.</span></div>
+                <div class="pl-tags"><span class="tag py">Python</span><span class="tag py">ML</span><span class="tag py">Pandas</span></div>
+              </div>
+              <div class="pl-links"><a href="#" class="pcl">Demo ↗</a><a href="#" class="pcl">Source ↗</a></div>
+            </div>
+            <div class="pl-item">
+              <div>
+                <div class="pl-n">UrbanSight</div>
+                <div class="pl-d"><span data-lang="en" class="on">Real-time vehicle detection and re-identification across distributed camera networks using computer vision.</span><span data-lang="es">Detección y re-identificación de vehículos en tiempo real sobre redes de cámaras distribuidas.</span></div>
+                <div class="pl-tags"><span class="tag py">PyTorch</span><span class="tag py">YOLO</span><span class="tag py">OpenCV</span></div>
+              </div>
+              <div class="pl-links"><a href="#" class="pcl">Demo ↗</a><a href="#" class="pcl">Source ↗</a></div>
+            </div>
+            <div class="pl-item">
+              <div>
+                <div class="pl-n">OneVote</div>
+                <div class="pl-d"><span data-lang="en" class="on">Digital voting platform using zero-knowledge proofs and homomorphic encryption for voter privacy and verifiable results.</span><span data-lang="es">Plataforma de votación digital con pruebas de cero conocimiento y cifrado homomórfico.</span></div>
+                <div class="pl-tags"><span class="tag web">Web</span><span class="tag js">Node</span><span class="tag go">Go</span></div>
+              </div>
+              <div class="pl-links"><a href="#" class="pcl">Demo ↗</a><a href="#" class="pcl">Source ↗</a></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPERIENCE -->
+      <section id="experience" class="sec">
+        <div class="inner">
+          <div class="sh"><span class="sh-t"><span data-lang="en" class="on">Experience</span><span data-lang="es">Experiencia</span></span><div class="sh-l"></div></div>
+          <div class="exp-box">
+            <div class="exp-tabs">
+              <button class="etab active" data-tab="work"><span data-lang="en" class="on">Work</span><span data-lang="es">Trabajo</span></button>
+              <button class="etab" data-tab="edu"><span data-lang="en" class="on">Education</span><span data-lang="es">Educación</span></button>
+            </div>
+            <div class="exp-body" id="body-work">
+              <div class="exp-entry">
+                <div class="exp-hd">
+                  <div class="exp-tl">Software Developer <span class="exp-org">@ ADClion</span></div>
+                  <div class="exp-per">Oct 2021 – <span data-lang="en" class="on">Present</span><span data-lang="es">Presente</span></div>
+                </div>
+                <div class="exp-sub">Lima, Peru / <span data-lang="en" class="on">Full-time</span><span data-lang="es">Tiempo completo</span></div>
+                <ul class="exp-ul">
+                  <li><span data-lang="en" class="on">Engineered AI agents automating business processes, reducing manual task time by <strong>40%</strong>.</span><span data-lang="es">Desarrollé agentes de IA reduciendo el tiempo manual en <strong>40%</strong>.</span></li>
+                  <li><span data-lang="en" class="on">Built <strong>20+</strong> automation workflows saving clients <strong>1,100+ hours</strong> monthly.</span><span data-lang="es">Construí <strong>20+</strong> flujos de automatización ahorrando <strong>1,100+ horas</strong> mensuales.</span></li>
+                  <li><span data-lang="en" class="on">Delivered responsive web apps and desktop tools across diverse business domains.</span><span data-lang="es">Entregué aplicaciones web responsivas y herramientas de escritorio para diversas áreas.</span></li>
+                </ul>
+                <div class="exp-meta">
+                  <span class="exp-mk">Stack</span><span class="exp-mv">Python / Node.js / React / Docker</span>
+                  <span class="exp-mk"><span data-lang="en" class="on">Domain</span><span data-lang="es">Área</span></span><span class="exp-mv">Automation / AI / Web</span>
+                </div>
+              </div>
+            </div>
+            <div class="exp-body" id="body-edu" style="display:none">
+              <div class="exp-entry">
+                <div class="exp-hd">
+                  <div class="exp-tl">M.Sc. <span data-lang="en" class="on">Artificial Intelligence</span><span data-lang="es">Inteligencia Artificial</span> <span class="exp-org">/ U. Continental</span></div>
+                  <div class="exp-per">2025 – <span data-lang="en" class="on">Present</span><span data-lang="es">Presente</span></div>
+                </div>
+                <div class="exp-sub">Lima, Peru</div>
+                <ul class="exp-ul">
+                  <li><span data-lang="en" class="on">Advanced research in deep learning, NLP, and AI systems design.</span><span data-lang="es">Investigación avanzada en deep learning, NLP y diseño de sistemas de IA.</span></li>
+                </ul>
+                <div class="exp-badge"><span data-lang="en" class="on">In progress</span><span data-lang="es">En curso</span></div>
+              </div>
+              <div class="exp-entry">
+                <div class="exp-hd">
+                  <div class="exp-tl">B.Sc. <span data-lang="en" class="on">Computer Science</span><span data-lang="es">Ciencias de la Computación</span> <span class="exp-org">/ PUCP</span></div>
+                  <div class="exp-per">2018 – 2023</div>
+                </div>
+                <div class="exp-sub">Lima, Peru / <span data-lang="en" class="on">Graduated with honors</span><span data-lang="es">Graduado con honores</span></div>
+                <ul class="exp-ul">
+                  <li><span data-lang="en" class="on">Focus on machine learning, distributed systems, and software engineering.</span><span data-lang="es">Enfocado en machine learning, sistemas distribuidos e ingeniería de software.</span></li>
+                  <li><span data-lang="en" class="on">Thesis: <strong>Vehicle re-identification using deep learning</strong>.</span><span data-lang="es">Tesis: <strong>Re-identificación de vehículos con deep learning</strong>.</span></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SKILLS -->
+      <section id="skills" class="sec">
+        <div class="inner">
+          <div class="sh"><span class="sh-t"><span data-lang="en" class="on">Skills</span><span data-lang="es">Habilidades</span></span><div class="sh-l"></div></div>
+          <div class="sk-grid">
+            <div class="ab">
+              <div class="ab-h"><span data-lang="en" class="on">Languages</span><span data-lang="es">Lenguajes</span></div>
+              <div class="lc"><ul class="ll"><li>JavaScript</li><li>TypeScript</li><li>Python</li><li>Go</li><li>C#</li></ul></div>
+            </div>
+            <div class="ab">
+              <div class="ab-h">Frontend</div>
+              <div class="lc"><ul class="ll"><li>React</li><li>Next.js</li><li>Astro</li></ul></div>
+            </div>
+            <div class="ab">
+              <div class="ab-h">Backend</div>
+              <div class="lc"><ul class="ll"><li>Node.js</li><li>FastAPI</li></ul></div>
+            </div>
+            <div class="ab">
+              <div class="ab-h"><span data-lang="en" class="on">Data &amp; AI</span><span data-lang="es">Datos e IA</span></div>
+              <div class="lc"><ul class="ll"><li>NumPy</li><li>Pandas</li><li>Scikit-learn</li><li>PyTorch</li><li>OpenCV</li></ul></div>
+            </div>
+            <div class="ab">
+              <div class="ab-h"><span data-lang="en" class="on">Databases</span><span data-lang="es">Bases de Datos</span></div>
+              <div class="lc"><ul class="ll"><li>PostgreSQL</li><li>SQLite</li></ul></div>
+            </div>
+            <div class="ab">
+              <div class="ab-h"><span data-lang="en" class="on">Tools</span><span data-lang="es">Herramientas</span></div>
+              <div class="lc"><ul class="ll"><li>Git</li><li>GitHub</li></ul></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section id="contact" class="sec">
+        <div class="inner">
+          <div class="sh"><span class="sh-t"><span data-lang="en" class="on">Contact</span><span data-lang="es">Contacto</span></span><div class="sh-l"></div></div>
+          <div class="contact-layout">
+            <div class="contact-info">
+              <div class="ci-h"><span data-lang="en" class="on">Get in touch</span><span data-lang="es">Contáctame</span></div>
+              <div class="ci-body">
+                <p class="ci-tagline"><span data-lang="en" class="on">Open to new opportunities, collaborations, and interesting problems.</span><span data-lang="es">Abierto a nuevas oportunidades, colaboraciones y problemas interesantes.</span></p>
+                <div class="ci-links">
+                  <a href="mailto:oscar@example.com" class="ci-link">oscar@example.com <span class="arr">↗</span></a>
+                  <a href="#" class="ci-link">github.com/oscar-r <span class="arr">↗</span></a>
+                  <a href="#" class="ci-link">linkedin.com/in/oscar-r <span class="arr">↗</span></a>
+                </div>
+              </div>
+            </div>
+            <div class="cw">
+              <div class="cw-h"><span data-lang="en" class="on">Send a message</span><span data-lang="es">Enviar un mensaje</span></div>
+              <div class="cf">
+                <div class="cf-row">
+                  <div class="cf-f"><label class="cf-l"><span data-lang="en" class="on">Name</span><span data-lang="es">Nombre</span></label><input class="cf-i" type="text" placeholder="—"></div>
+                  <div class="cf-f"><label class="cf-l">Email</label><input class="cf-i" type="email" placeholder="—"></div>
+                </div>
+                <div class="cf-f"><label class="cf-l"><span data-lang="en" class="on">Subject</span><span data-lang="es">Asunto</span></label><input class="cf-i" type="text" placeholder="—"></div>
+                <div class="cf-f"><label class="cf-l"><span data-lang="en" class="on">Message</span><span data-lang="es">Mensaje</span></label><textarea class="cf-i" placeholder="—"></textarea></div>
+                <button class="cf-btn" onclick="handleSend(this)"><span data-lang="en" class="on">Send Message</span><span data-lang="es">Enviar Mensaje</span></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <span>Oscar Rodríguez · © 2025</span>
+        <div class="fl">
+          <a href="#">GitHub</a>
+          <a href="#">LinkedIn</a>
+          <a onclick="scrollToTop()">↑ <span data-lang="en" class="on">Top</span><span data-lang="es">Inicio</span></a>
+        </div>
+      </footer>
+
+    </div><!-- /main -->
+  </div><!-- /page-body -->
+</div><!-- /page -->
+
+<script>
+// ── Clock HH:MM ──
+function tick(){
+  const d=new Date(new Date().toLocaleString('en-US',{timeZone:'America/Lima'}));
+  const p=x=>String(x).padStart(2,'0');
+  const el=document.getElementById('sb-clk');
+  if(el) el.textContent=`${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+tick(); setInterval(tick,30000);
+
+// ── Cursor (desktop only) ──
+if(window.matchMedia('(pointer:fine)').matches){
+  const cur=document.getElementById('cur');
+  document.addEventListener('mousemove',e=>{cur.style.left=e.clientX+'px';cur.style.top=e.clientY+'px'});
+  const hoverEls='a,button,[onclick],.pl-item,.soc,.etab,.pcl,.sbh-a,.sb-a,.ci-link,.cf-btn';
+  document.querySelectorAll(hoverEls).forEach(el=>{
+    el.addEventListener('mouseenter',()=>document.body.classList.add('cur-hover'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('cur-hover'));
+  });
+  document.addEventListener('mousedown',()=>{
+    document.body.classList.add('cur-click');
+    cur.style.animation='none';
+    requestAnimationFrame(()=>{cur.style.animation='spinOnce .3s ease forwards'});
+  });
+  document.addEventListener('mouseup',()=>document.body.classList.remove('cur-click'));
+  document.addEventListener('mouseleave',()=>cur.style.opacity='0');
+  document.addEventListener('mouseenter',()=>cur.style.opacity='');
+}
+
+// ── Sidebar reveal ──
+const mainEl=document.getElementById('main');
+new IntersectionObserver(([e])=>{
+  document.body.classList.toggle('scrolled',!e.isIntersecting);
+},{root:mainEl,threshold:0.05}).observe(document.getElementById('hero'));
+
+// ── Section reveal ──
+document.querySelectorAll('.sec').forEach(s=>{
+  new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')});
+  },{root:mainEl,threshold:.08}).observe(s);
+});
+
+// ── Active nav ──
+const SECS=['projects','experience','skills','contact'];
+mainEl.addEventListener('scroll',()=>{
+  let cur='';
+  SECS.forEach(id=>{const el=document.getElementById(id);if(el&&mainEl.scrollTop+100>=el.offsetTop)cur=id});
+  document.querySelectorAll('[data-sec]').forEach(el=>el.classList.toggle('active',el.dataset.sec===cur));
+});
+
+// ── Scroll helpers ──
+function scrollToTop(){mainEl.scrollTo({top:0,behavior:'smooth'})}
+function scrollTo(id){document.getElementById(id)?.scrollIntoView({behavior:'smooth'})}
+
+// ── Exp tabs ──
+document.querySelectorAll('.etab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.etab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const tab=t.dataset.tab;
+    document.getElementById('body-work').style.display=tab==='work'?'block':'none';
+    document.getElementById('body-edu').style.display=tab==='edu'?'block':'none';
+  });
+});
+
+// ── Theme — single function, all buttons ──
+function toggleTheme(){
+  document.documentElement.dataset.theme=
+    document.documentElement.dataset.theme==='dark'?'light':'dark';
+}
+['themeBtn','themeBtnSb','themeBtnMob'].forEach(id=>{
+  document.getElementById(id)?.addEventListener('click',toggleTheme);
+});
+
+// ── Lang — single function, all selects ──
+const langSelIds=['langSel','langSelSb','langSelMob'];
+let lang='en';
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('[data-lang]').forEach(el=>el.classList.toggle('on',el.dataset.lang===l));
+  langSelIds.forEach(id=>{const el=document.getElementById(id);if(el)el.value=l});
+}
+langSelIds.forEach(id=>{
+  document.getElementById(id)?.addEventListener('change',e=>setLang(e.target.value));
+});
+
+// ── Send ──
+function handleSend(btn){
+  const o=btn.innerHTML;
+  btn.textContent=lang==='es'?'Enviando…':'Sending…';
+  btn.disabled=true;
+  setTimeout(()=>{
+    btn.textContent=lang==='es'?'✔ Enviado':'✔ Sent';
+    btn.style.borderColor='var(--teal)';btn.style.color='var(--teal)';
+    setTimeout(()=>{btn.innerHTML=o;btn.disabled=false;btn.style.cssText='';setLang(lang)},3000);
+  },1200);
+}
+</script>
+</body>
+</html>
