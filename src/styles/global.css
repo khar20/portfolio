@@ -55,7 +55,7 @@ a{color:inherit}
 
 /* CURSOR */
 @media(pointer:fine){
-  body{cursor:none}
+  body, body *{cursor:none !important}
   #cur{
     position:fixed;top:0;left:0;
     width:8px;height:8px;background:var(--teal);
