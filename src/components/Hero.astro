@@ -28,7 +28,13 @@ const t = useTranslations(lang);
 
     <div class="hero-top">
       <div class="hero-pic">
-        <Image src={profile} alt={t.hero.portraitAlt} class="hero-img" />
+        <Image
+          src={profile}
+          alt={t.hero.portraitAlt}
+          class="hero-img"
+          loading="eager"
+          fetchpriority="high"
+        />
       </div>
       <div class="hero-text">
         <h1 class="hero-name">Oscar Rodríguez.<span class="cur"></span></h1>
